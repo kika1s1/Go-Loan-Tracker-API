@@ -62,10 +62,7 @@ func (u *UserUsecase) ResetPassword(resetToken string, newPassword string) error
 		return errors.New("invalid token")
 	}
 	email := claims.Email
-	// hashedPassword, err := hash.HashPassword(newPassword)
-	if err != nil {
-		return err
-	}
+	
 	user, err := u.repo.FindUserByEmail(context.Background(), email)
 
 	if user != nil && err == nil {
