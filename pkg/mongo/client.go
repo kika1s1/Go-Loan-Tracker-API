@@ -42,7 +42,7 @@ func ConnectDB(uri string) (*mongo.Client, error) {
 // GetCollection returns a collection from the connected MongoDB database
 func GetCollection(collectionName string) *mongo.Collection {
 
-	return Client.Database("blogDB").Collection(collectionName)
+	return Client.Database("LoanApi").Collection(collectionName)
 }
 
 // DisconnectDB disconnects from the MongoDB database
@@ -56,7 +56,7 @@ func DisconnectDB() {
 
 func InitializeCollections() {
 	UserCollection = GetCollection("users")
-	UserCollection = GetCollection("users")
+	LoanCollection = GetCollection("loans")
 
 	
 	
