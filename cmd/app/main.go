@@ -1,9 +1,7 @@
 package main
 
 import (
-	// "blogApp/internal/config"
-	// "blogApp/internal/http/routes"
-	// "blogApp/pkg/mongo"
+
 
 	"github.com/gin-gonic/gin"
 	"github.com/kika1s1/Go-Loan-Tracker-API/internal/config"
