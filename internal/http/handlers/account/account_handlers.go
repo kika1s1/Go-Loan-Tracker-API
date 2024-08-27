@@ -194,3 +194,11 @@ func (h *UserHandler) GetAnyUser(c *gin.Context) {
 	c.JSON(http.StatusOK, GetUser)
 }
 
+func (h *UserHandler) GetAllUsers(c *gin.Context) {
+	users, err := h.UserUsecase.GetAllUsers()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, users)
+}
