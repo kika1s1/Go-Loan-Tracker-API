@@ -9,8 +9,9 @@ type LoanUseCase struct {
 	repo repository.LoanRepository
 }
 
-func NewLoanUseCase(repo *repository.LoanRepository) *LoanUseCase {
-	return &LoanUseCase{repo: *repo}
+
+func NewLoanUseCase(repo repository.LoanRepository) *LoanUseCase {
+	return &LoanUseCase{repo: repo}
 }
 
 func (uc *LoanUseCase) ApplyForLoan(loan domain.Loan) (*domain.Loan, error) {
@@ -40,4 +41,9 @@ func (uc *LoanUseCase) ApproveRejectLoan(id string, status string) (*domain.Loan
 func (uc *LoanUseCase) DeleteLoan(id string) error {
 	_, err := uc.repo.DeleteLoan(id)
 	return err
+}
+
+// ViewSystemLogs implements LoanUseCaseInterface.
+func (uc *LoanUseCase) ViewSystemLogs() ([]domain.Log, error) {
+	return uc.repo.FindAllLogs()
 }

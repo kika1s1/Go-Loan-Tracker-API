@@ -11,4 +11,5 @@ type LoanRepository interface {
 	FindAllLoans(status string, order string) ([]domain.Loan, error)
 	UpdateLoanStatus(id string, status string) (*mongo.UpdateResult, error)
 	DeleteLoan(id string) (*mongo.DeleteResult, error)
+	FindAllLogs() ([]domain.Log, error)
 }

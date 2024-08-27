@@ -10,22 +10,21 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type LoanRepository struct {
-	collection *mongo.Collection
+type LoanRepositoryMongo struct {
+	Collection *mongo.Collection
 }
 
-func NewLoanRepository(database *mongo.Database) *LoanRepository {
-	collection := database.Collection("loans")
-	return &LoanRepository{
-		collection: collection,
+func NewLoanRepository(collection *mongo.Collection) *LoanRepositoryMongo {
+	return &LoanRepositoryMongo{
+		Collection: collection,
 	}
 }
 
-func (r *LoanRepository) CreateLoan(loan domain.Loan) (*mongo.InsertOneResult, error) {
+func (r *LoanRepositoryMongo) CreateLoan(loan domain.Loan) (*mongo.InsertOneResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	result, err := r.collection.InsertOne(ctx, loan)
+	result, err := r.Collection.InsertOne(ctx, loan)
 	if err != nil {
 		return nil, err
 	}
@@ -33,13 +32,13 @@ func (r *LoanRepository) CreateLoan(loan domain.Loan) (*mongo.InsertOneResult, e
 	return result, nil
 }
 
-func (r *LoanRepository) FindLoanByID(id string) (*domain.Loan, error) {
+func (r *LoanRepositoryMongo) FindLoanByID(id string) (*domain.Loan, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	filter := bson.M{"_id": id}
 	var loan domain.Loan
-	err := r.collection.FindOne(ctx, filter).Decode(&loan)
+	err := r.Collection.FindOne(ctx, filter).Decode(&loan)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +46,7 @@ func (r *LoanRepository) FindLoanByID(id string) (*domain.Loan, error) {
 	return &loan, nil
 }
 
-func (r *LoanRepository) FindAllLoans(status string, order string) ([]domain.Loan, error) {
+func (r *LoanRepositoryMongo) FindAllLoans(status string, order string) ([]domain.Loan, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -61,7 +60,7 @@ func (r *LoanRepository) FindAllLoans(status string, order string) ([]domain.Loa
 		opts.SetSort(bson.M{"createdAt": order})
 	}
 
-	cursor, err := r.collection.Find(ctx, filter, opts)
+	cursor, err := r.Collection.Find(ctx, filter, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -80,14 +79,14 @@ func (r *LoanRepository) FindAllLoans(status string, order string) ([]domain.Loa
 	return loans, nil
 }
 
-func (r *LoanRepository) UpdateLoanStatus(id string, status string) (*mongo.UpdateResult, error) {
+func (r *LoanRepositoryMongo) UpdateLoanStatus(id string, status string) (*mongo.UpdateResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	filter := bson.M{"_id": id}
 	update := bson.M{"$set": bson.M{"status": status}}
 
-	result, err := r.collection.UpdateOne(ctx, filter, update)
+	result, err := r.Collection.UpdateOne(ctx, filter, update)
 	if err != nil {
 		return nil, err
 	}
@@ -95,16 +94,61 @@ func (r *LoanRepository) UpdateLoanStatus(id string, status string) (*mongo.Upda
 	return result, nil
 }
 
-func (r *LoanRepository) DeleteLoan(id string) (*mongo.DeleteResult, error) {
+func (r *LoanRepositoryMongo) DeleteLoan(id string) (*mongo.DeleteResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	filter := bson.M{"_id": id}
 
-	result, err := r.collection.DeleteOne(ctx, filter)
+	result, err := r.Collection.DeleteOne(ctx, filter)
 	if err != nil {
 		return nil, err
 	}
 
 	return result, nil
+}
+
+func (r *LoanRepositoryMongo) ViewSystemLogs() ([]domain.Log, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	cursor, err := r.Collection.Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var logs []domain.Log
+	for cursor.Next(ctx) {
+		var log domain.Log
+		err := cursor.Decode(&log)
+		if err != nil {
+			return nil, err
+		}
+		logs = append(logs, log)
+	}
+
+	return logs, nil
+}
+func (r *LoanRepositoryMongo) FindAllLogs() ([]domain.Log, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	cursor, err := r.Collection.Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var logs []domain.Log
+	for cursor.Next(ctx) {
+		var log domain.Log
+		err := cursor.Decode(&log)
+		if err != nil {
+			return nil, err
+		}
+		logs = append(logs, log)
+	}
+
+	return logs, nil
 }
