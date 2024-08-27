@@ -1,28 +1,15 @@
 package token
 
 import (
-	// "blogApp/internal/domain"
-	// "blogApp/internal/usecase"
-	// "blogApp/pkg/jwt"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/kika1s1/Go-Loan-Tracker-API/internal/domain"
-	"github.com/kika1s1/Go-Loan-Tracker-API/internal/usecase"
 	"github.com/kika1s1/Go-Loan-Tracker-API/pkg/jwt"
 )
 
-type TokenHandler struct {
-	tokenUseCase usecase.TokenUsecase
-}
-
-func NewTokenHandler(tokenUseCase usecase.TokenUsecase) *TokenHandler {
-	return &TokenHandler{
-		tokenUseCase: tokenUseCase,
-	}
-}
+type TokenHandler struct{}
 
 func (h *TokenHandler) RefreshToken(c *gin.Context) {
 	refreshToken := strings.Split(c.GetHeader("Authorization"), " ")[1]
@@ -79,19 +66,7 @@ func (h *TokenHandler) LogOut(c *gin.Context) {
 		return
 	}
 
-	// if err := c.ShouldBindJSON(&token); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
-	err := h.tokenUseCase.BlacklistToken(c, token.RefreshToken, domain.TokenType("refresh"), time.Now())
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	err = h.tokenUseCase.BlacklistToken(c, token.AccessToken, domain.TokenType("access"), time.Now())
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+	
+	
 	c.JSON(http.StatusOK, gin.H{"message": "logged out successfully"})
 }
