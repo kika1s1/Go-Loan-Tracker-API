@@ -7,12 +7,14 @@ import (
 
 func RegisterUserRoutes(router *gin.Engine) {
 	userHandler := InstantaiteUserHandler()
-	userRoute := router.Group("/api/v1/accounts", middleware.AuthMiddleware())
+	userRoute := router.Group("/api/v1/users", middleware.AuthMiddleware())
 	{
-		userRoute.GET("/me", userHandler.GetUser)
-		userRoute.DELETE("/me", userHandler.DeleteUser)
-		userRoute.PUT("/me", userHandler.UpdateUser)
-		userRoute.GET("/any/:id", userHandler.GetAnyUser)
+		userRoute.GET("/profile", userHandler.GetUser)
+		userRoute.DELETE("/delete", userHandler.DeleteUser)
+		userRoute.PUT("/password-update", userHandler.UpdateUser)
+		userRoute.POST("/password-reset", userHandler.ResetPasswordRequest)
+		userRoute.POST("/password-update", userHandler.ResetPassword)
+
 	}
 
 }

@@ -16,8 +16,7 @@ func RegisterVerificationRoutes(router *gin.Engine) {
 		authRoutes.GET("/google_redirect", userHandler.GoogleCallback)
 		authRoutes.POST("/verify-email", userHandler.RequestVerifyEmail)
 		authRoutes.GET("/verify/confirm", userHandler.VerifyEmail) //I used this naming to make things clear
-		authRoutes.POST("/reset-password/request", userHandler.ResetPasswordRequest)
-		authRoutes.POST("/reset-password/confirm", userHandler.ResetPassword)
+		
 
 		//logout and refresh
 		tokenHandler := &token.TokenHandler{}
