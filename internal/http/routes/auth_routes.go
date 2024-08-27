@@ -1,14 +1,8 @@
 package routes
 
 import (
-	// "blogApp/internal/http/handlers/token"
-	// "blogApp/internal/repository/mongodb"
-	// "blogApp/internal/usecase"
-	// localmongo "blogApp/pkg/mongo"
 
 	"github.com/gin-gonic/gin"
-	// "github.com/kika1s1/Go-Loan-Tracker-API/internal/repository/mongodb"
-	// localmongo "github.com/kika1s1/Go-Loan-Tracker-API/pkg/mongo"
 )
 
 func RegisterVerificationRoutes(router *gin.Engine) {
