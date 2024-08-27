@@ -8,6 +8,7 @@ func SetUpRoute(router *gin.Engine) {
 	RegisterUserRoutes(router)
 	RegisterVerificationRoutes(router)
 	RegisterAdminUserRoutes(router)
+	RegisterLoanRoutes(router)
 
 
 }
