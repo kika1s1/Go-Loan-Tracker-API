@@ -2,3 +2,6 @@
 .air.toml
 tmp
 push.sh
+.air.toml
+.env
+
